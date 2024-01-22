@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+<!-- la plantilla de base.html pasa a ser el fondo, la que llama a las demás   -->
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}
+    Login
+    {{ super() }}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        {{ wtf.quick_form(login_form) }}
+    </div>
+{% endblock %}

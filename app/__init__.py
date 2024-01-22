@@ -1,6 +1,8 @@
 from flask import Flask
 from flask_bootstrap import Bootstrap
-from .config import Config
+
+from .config import Config # el punto al inicio indica que el archivo config.py está en la misma carpeta que __init__.py
+from .auth import auth # Importamos el blueprint auth
 
 # retorna la app
 def create_app():
@@ -8,6 +10,8 @@ def create_app():
     bootstrap = Bootstrap(app) # Instanciamos Bootstrap con la instancia de Flask
 
     app.config.from_object(Config)
+
+    app.register_blueprint(auth) # Registramos el blueprint auth
 
     return app
 

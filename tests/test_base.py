@@ -37,3 +37,16 @@ class mainTest(TestCase):
         response = self.client.post(url_for('/hello'), data=fake_form)
 
         self.assertRedirects(response, url_for('/'))
+
+    # Sexta prueba, verificamos que el blueprint auth exista
+    def test_auth_blueprint_exists(self):
+        self.assertIn('auth', self.app.blueprints)
+
+    # Séptima prueba, verificamos que la ruta login retorne un código 200
+    def test_auth_login_get(self):
+        response = self.client.get(url_for('auth.login'))
+        self.assert200(response)
+
+    def test_auth_login_template(self):
+        self.client.get(url_for('auth.login'))
+        self.assertTemplateUsed('login.html')
