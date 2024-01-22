@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+<!-- se extiende la plantilla de base.html  -->
+
+{% import "macros.html" as macros %}
+<!-- Se pueden importar macros, que son como funciones -->
+
+{% import 'bootstrap/wtf.html' as wtf %}
+
+<!-- Este block cambia el contenido del block llamado igual en la plantilla -->
+<!-- Usando súper() se conserva el contenido original del bloque y se le suma este contenido -->
+{% block title %}
+    Bienvenido
+    {{ super() }}
+{% endblock %}
+
+<!-- lo que esté lo que esté dentro del block content serán de puesto en el espacio del blog content en la plantilla original -->
+{% block content %}
+    {% if username %}
+        <h1>Bienvenido {{ username | capitalize }}</h1>
+        <!-- capitalize es un filtro de jinja2, aquí hay más -->
+        <!-- https://jinja.palletsprojects.com/en/3.0.x/templates/#builtin-filters -->
+    {% endif %}
+
+    {% if user_ip %}
+        <!-- eso de ahí arriba es una estructura de control -->
+
+        <!-- se pueden colocar variables entre bracket  -->
+        <h2>Hola usuario, tu IP es {{ user_ip }}</h2> 
+    {% else %}
+        <a href="{{ url_for('index') }}">Ir a inicio</a>
+
+        <!-- si se abre con if, se tiene que cerrar con un endif  -->
+    {% endif %}
+
+    <div class="container">
+        <!-- <form action="{{ url_for('hello') }}" method="POST">
+            {{ login_form.username }}
+            {{ login_form.username.label }}
+            {{ login_form.username(class="form-control") }}
+            {{ login_form.password.label }}
+            {{ login_form.password }}
+            {{ login_form.password(class="form-control") }}
+            {{ login_form.submit(class="btn btn-primary") }}
+        </form> -->
+
+        {{ wtf.quick_form(login_form) }}
+
+    </div>
+
+    <ul>
+        <!-- Se le pasa la variable como parámetro -->
+        {% for todo in todos %}
+            {{ macros.render_todo(todo) }}
+            <!-- Así es como se llama a una macro -->
+        {% endfor %}
+    </ul>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends 'bootstrap/base.html' %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css')}}">
+    <title>
+        {% block title %} | Flask Platzi{% endblock %}
+    </title>
+{% endblock %}
+
+{% block body %}
+    {% block navbar %}
+        {% include 'navbar.html' %}
+    {% endblock %}
+
+    <!-- este código es para enviar alertas -->
+    {% for message in get_flashed_messages() %}
+        <div class="alert alert-success alert-dismissable">
+            <!-- "&times;" es un símbolo utf8 para representar la X -->
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% block content %}
+    <!-- lo que esté dentro de block content se renderizará en este espacio -->
+    {% endblock %}
+
+    <!-- El siguiente código es para que copie el script y poder cerrar la alerta -->
+    {% block scripts %}
+        {{ super() }}
+        <!-- <script src="{{ url_for('static', filename='js/main.js') }}"></script> -->
+    {% endblock %}
+{% endblock %}

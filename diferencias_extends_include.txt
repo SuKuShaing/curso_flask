@@ -1,0 +1,58 @@
+<!-- 
+    ¿Cuál es la diferencia entre extends e include? Me parece que la respuesta que le di puede ser de utilidad para otros que tengan la misma duda. Así que la copio aquí como aporte 👇:
+.
+Cuando usas el keywords extends para llamar a una plantilla, esta plantilla que has llamado toma el control de tu vista. Tomemos el ejemplo con el que venimos trabajando.
+.
+Contenido del archivo hello.html (reducido para el ejemplo):
+
+01. {% extends 'base.html' %}
+02. 
+03. {% block title %} 
+04.    {{ super() }}
+05.    Bienvenida 
+06. {% endblock %}
+07. 
+08. {% block content %}
+09.    {% if user_ip %}
+10.        <h1>Hello World Platzi, tu IP es {{ user_ip }}</h1>
+11.   {% else %}
+12.        <a href="{{ url_for('index') }}">Ir a inicio</a>
+13.    {% endif %}
+14. {% endblock %}
+
+Nota que llamar a base.html hace que ahora todo el contenido de hello.html gira en torno al primero. Puedes notar esto, específicamente en la línea #4, dónde necesita utilizar el método super() para traer contenido de la plantilla PADRE.
+.
+Adicionalmente puedes ver en la línea #8 que se crea un bloque content que contiene (dependiendo del condicional) un Título o un Enlace. Este contenido SOLO se mostrará si nombra a este bloque content en base.html. Por lo que si revisas el código de base.html podrás ver la llamada del PADRE al HIJO:
+.
+El código que copio de base.html ha sido adaptado para el ejemplo:
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title> {% block title %} Flask Platzi | {% endblock %} </title>
+</head>
+<body>
+    <-- Aquí puedes ver la llamada del padre al hijo 
+    {% block content %}
+    {% endblock %}    
+</body>
+</html>
+Sin embargo, cuando usas el keyword import lo único que haces es enlazar una plantilla con otra y será hello.html quien tendrá el control de hacer la llamada al contenido de la otra plantilla cuando lo requiera. Puedes ver lo aquí:
+.
+El código que copio de hello.html ha sido adaptado para el ejemplo:
+
+01. {% import 'macros.html' as macros %}
+02. 
+03. {% block content %}
+04.     <ul>
+05.         {% for todo in todos %}
+06.             {{ macros.render_todo(todo) }}
+07.         {% endfor %}
+08.     </ul>
+09. {% endblock %}
+Como puedes ver en la línea #6 es hello.html quien decide llamar y usar el macro, inclusive podrías importar macros.html y no usarlo. Cosa que no podría pasar con extends.
+.
+Espero que te haya servido algo de lo explicado aquí.
+.
+¡Saludos!
+-->

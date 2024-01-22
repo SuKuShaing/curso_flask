@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+<!-- la plantilla de base.html pasa a ser el fondo, la que llama a las demás   -->
+
+{% block title %}
+    404
+    {{ super() }}
+{% endblock %}
+
+{% block content %}
+    <h1>Lo sentimos</h1>
+    <h3>no encontramos lo que estas buscando</h3>
+    <p>{{ error }}</p>
+{% endblock %}
