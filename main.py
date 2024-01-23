@@ -14,12 +14,12 @@ import unittest # Para ejecutar las pruebas unitarias
 
 from app import create_app # Importamos la función create_app del archivo __init__.py de la carpeta app
 from app.forms import LoginForm # Importamos la clase LoginForm del archivo forms.py de la carpeta app
+from app.firestore_service import get_users, get_todos
+
 
 
 #Creamos la instancia del objeto Flask
 app = create_app() # Creamos la instancia de la aplicación Flask
-todos = ['comprar café', 'enviar solicitud de compra', 'entregar video a productor', 'enviar correo a cliente', 'enviar correo a proveedor'] # Lista de tareas
-
 
 #############################################
 ################ Testing ####################
@@ -65,27 +65,25 @@ def index():
 
 
 # Este es un decorador
-@app.route('/hello', methods=['GET', 'POST']) # por defecto es GET (obtener) es permitido, POST hay que especificarlo, methods=['GET', 'POST']
+@app.route('/hello', methods=['GET']) # por defecto es GET (obtener) es permitido, POST hay que especificarlo, methods=['GET', 'POST']
 def hello():
     user_ip = session.get('user_ip') # Obtenemos la IP del usuario guardada en la cookie
-    # user_ip = request.cookies.get('user_ip') # Obtenemos la IP del usuario guardada en la cookie
-    login_form = LoginForm() # Instanciamos el formulario de login, después de esto se puede agregar al contexto
     username = session.get('username')
+    # user_ip = request.cookies.get('user_ip') # Obtenemos la IP del usuario guardada en la cookie
+    # login_form = LoginForm() # Instanciamos el formulario de login, después de esto se puede agregar al contexto
 
     context = {
         'user_ip': user_ip,
-        'todos': todos,
-        'login_form': login_form,
+        'todos': get_todos(user_id=username),
+        # 'login_form': login_form,
         'username': username
     }
 
-    if login_form.validate_on_submit(): # Si el formulario es válido
-        username = login_form.username.data # Obtenemos el nombre de usuario del formulario
-        session['username'] = username # el nombre de usuario se guarda en la sesión de manera segura
+    users = get_users()
 
-        flash(f'Nombre de usuario {username} registrado con éxito') # Mostramos un mensaje al usuario
-
-        return redirect(url_for('index'))
+    for user in users:
+        print(user.id)
+        print(user.to_dict()['password'])
 
     return render_template('hello.html', **context) # Renderizamos el template HTML y le enviamos la ip del usuario como parámetro
     # expandir un diccionario (**Kwargs), al colocar "**" a la variable context, le estamos indicando que en vez de pasarle un diccionario, le pasamos los elementos del diccionario como parámetros, como lo de arriba

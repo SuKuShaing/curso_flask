@@ -31,7 +31,7 @@ $ export FLASK_DEBUG=1
 
 para activar el modo development
 '''sh
-$ export FLASK_DEBUG=1
+$ export FLASK_DEVELOPMENT=1
 '''
 
 

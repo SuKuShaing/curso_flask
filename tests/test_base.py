@@ -28,15 +28,11 @@ class mainTest(TestCase):
         response = self.client.get(url_for('/hello'))
         self.assert200(response)
 
-    # Quinta prueba, verificamos que hello post redireccione a index
+    # Quinta prueba, verificamos que hello retorne un código 405
     def test_hello_post(self):
-        fake_form = {
-            'username': 'fake',
-            'password': 'fake-password'
-        }
-        response = self.client.post(url_for('/hello'), data=fake_form)
+        response = self.client.post(url_for('/hello'))
 
-        self.assertRedirects(response, url_for('/'))
+        self.assertRedirects(response.status_code, 405)
 
     # Sexta prueba, verificamos que el blueprint auth exista
     def test_auth_blueprint_exists(self):
@@ -47,6 +43,17 @@ class mainTest(TestCase):
         response = self.client.get(url_for('auth.login'))
         self.assert200(response)
 
+    # Octava prueba, verificamos que el template login se esté usando
     def test_auth_login_template(self):
         self.client.get(url_for('auth.login'))
         self.assertTemplateUsed('login.html')
+
+    # Novena prueba, verificamos que el formulario redirija a index
+    def test_auth_login_post(self):
+        fake_form = {
+            'username': 'fake',
+            'password': 'fake-password'
+        }
+        response = self.client.post(url_for('auth.login'), data=fake_form)
+
+        self.assertRedirects(response, url_for('index'))
