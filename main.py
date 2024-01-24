@@ -2,6 +2,7 @@ from flask import Flask, request, make_response, redirect, render_template, abor
 from markupsafe import escape # Para reemplazar caracteres de <script> a &lt;script&gt; para evitar la inyección de código por parte de los usuarios
 from flask_bootstrap import Bootstrap # Para usar Bootstrap en Flask
 import unittest # Para ejecutar las pruebas unitarias
+from flask_login import login_required
 # Flask, para crear el servidor
 # request, para obtener cosas del usuario, entre ellos la IP
 # make_response, para crear una respuesta al usuario
@@ -66,6 +67,7 @@ def index():
 
 # Este es un decorador
 @app.route('/hello', methods=['GET']) # por defecto es GET (obtener) es permitido, POST hay que especificarlo, methods=['GET', 'POST']
+@login_required
 def hello():
     user_ip = session.get('user_ip') # Obtenemos la IP del usuario guardada en la cookie
     username = session.get('username')
@@ -80,10 +82,6 @@ def hello():
     }
 
     users = get_users()
-
-    for user in users:
-        print(user.id)
-        print(user.to_dict()['password'])
 
     return render_template('hello.html', **context) # Renderizamos el template HTML y le enviamos la ip del usuario como parámetro
     # expandir un diccionario (**Kwargs), al colocar "**" a la variable context, le estamos indicando que en vez de pasarle un diccionario, le pasamos los elementos del diccionario como parámetros, como lo de arriba
