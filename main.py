@@ -2,7 +2,7 @@ from flask import Flask, request, make_response, redirect, render_template, abor
 from markupsafe import escape # Para reemplazar caracteres de <script> a &lt;script&gt; para evitar la inyección de código por parte de los usuarios
 from flask_bootstrap import Bootstrap # Para usar Bootstrap en Flask
 import unittest # Para ejecutar las pruebas unitarias
-from flask_login import login_required
+from flask_login import login_required, current_user
 # Flask, para crear el servidor
 # request, para obtener cosas del usuario, entre ellos la IP
 # make_response, para crear una respuesta al usuario
@@ -70,7 +70,8 @@ def index():
 @login_required
 def hello():
     user_ip = session.get('user_ip') # Obtenemos la IP del usuario guardada en la cookie
-    username = session.get('username')
+    username = current_user.id
+    # username = session.get('username')
     # user_ip = request.cookies.get('user_ip') # Obtenemos la IP del usuario guardada en la cookie
     # login_form = LoginForm() # Instanciamos el formulario de login, después de esto se puede agregar al contexto
 
