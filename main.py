@@ -14,8 +14,8 @@ from flask_login import login_required, current_user
 # flash, para mostrar mensajes al usuario
 
 from app import create_app # Importamos la función create_app del archivo __init__.py de la carpeta app
-from app.forms import TodoForm, DeleteTodoForm # Importamos la clase LoginForm del archivo forms.py de la carpeta app
-from app.firestore_service import get_users, get_todos, put_todo, delete_todo
+from app.forms import TodoForm, DeleteTodoForm, UpdateTodoForm # Importamos la clase LoginForm del archivo forms.py de la carpeta app
+from app.firestore_service import update_todo, get_todos, put_todo, delete_todo
 
 
 
@@ -77,6 +77,7 @@ def hello():
 
     todo_form = TodoForm()
     delete_form = DeleteTodoForm()
+    update_form = UpdateTodoForm()
 
     context = {
         'user_ip': user_ip,
@@ -84,7 +85,8 @@ def hello():
         # 'login_form': login_form,
         'username': username,
         'todo_form': todo_form,
-        'delete_form': delete_form
+        'delete_form': delete_form,
+        'update_form': update_form
     }
 
     # users = get_users()
@@ -110,6 +112,16 @@ def delete(todo_id):
     return redirect(url_for('hello'))
 
 
+@app.route('/todo/update/<todo_id>/<int:done>', methods=['POST'])
+def update(todo_id, done):
+    user_id = current_user.id
+    update_todo(
+        user_id=user_id,
+        todo_id=todo_id,
+        done=done
+    )
+
+    return redirect(url_for('hello'))
 
 if __name__ == '__main__':
     app.run(debug=True)

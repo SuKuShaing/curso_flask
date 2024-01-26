@@ -33,6 +33,14 @@ def put_todo(user_id, description):
     todos_collection_ref.add({'description': description, 'done': False}) # Agregamos un nuevo documento a la colección "todos" del usuario
 
 def delete_todo(user_id, todo_id):
-    todo_ref = db.document(f'users/{user_id}/todos/{todo_id}'.format(user_id, todo_id)) # Obtenemos el documento "todo" del usuario
+    todo_ref = _get_todo_ref(user_id, todo_id) # Obtenemos la referencia "todo" del usuario
     todo_ref.delete() # Borramos el documento "todo" del usuario
     # todo_ref = db.collection('users').document(user_id).collection('todos').document(todo_id) # Obtenemos el documento "todo" del usuario
+
+def update_todo(user_id, todo_id, done):
+    todo_done = not bool(done)
+    todo_ref = _get_todo_ref(user_id, todo_id)
+    todo_ref.update({'done': todo_done}) # Actualizamos el documento "todo" del usuario
+
+def _get_todo_ref(user_id, todo_id):
+    return db.document(f'users/{user_id}/todos/{todo_id}'.format(user_id, todo_id)) # Obtenemos la referencia "todo" del usuario

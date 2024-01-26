@@ -40,7 +40,7 @@
     <ul class="list-group">
         <!-- Se le pasa la variable como parámetro -->
         {% for todo in todos %}
-            {{ macros.render_todo(todo, delete_form) }}
+            {{ macros.render_todo(todo, delete_form, update_form) }}
             <!-- Así es como se llama a una macro -->
         {% endfor %}
     </ul>
