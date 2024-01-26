@@ -3,7 +3,8 @@
 {% macro render_todo(todo, delete_form) %}
     <li class="list-group-item">
         <span class="badge">
-            {{ todo.to_dict().done }}
+            <!-- {{ todo.to_dict().done }} -->
+            {% if todo.to_dict().done %}
                 Hecha
             {% else %}
                 Pendiente
