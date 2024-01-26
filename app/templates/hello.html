@@ -32,10 +32,15 @@
         <!-- si se abre con if, se tiene que cerrar con un endif  -->
     {% endif %}
 
-    <ul>
+    <div class="container">
+        <h2>Crea una nueva tarea</h2>
+        {{ wtf.quick_form(todo_form) }}
+    </div>
+
+    <ul class="list-group">
         <!-- Se le pasa la variable como parámetro -->
         {% for todo in todos %}
-            {{ macros.render_todo(todo) }}
+            {{ macros.render_todo(todo, delete_form) }}
             <!-- Así es como se llama a una macro -->
         {% endfor %}
     </ul>

@@ -14,8 +14,8 @@ from flask_login import login_required, current_user
 # flash, para mostrar mensajes al usuario
 
 from app import create_app # Importamos la función create_app del archivo __init__.py de la carpeta app
-from app.forms import LoginForm # Importamos la clase LoginForm del archivo forms.py de la carpeta app
-from app.firestore_service import get_users, get_todos
+from app.forms import TodoForm, DeleteTodoForm # Importamos la clase LoginForm del archivo forms.py de la carpeta app
+from app.firestore_service import get_users, get_todos, put_todo, delete_todo
 
 
 
@@ -66,7 +66,7 @@ def index():
 
 
 # Este es un decorador
-@app.route('/hello', methods=['GET']) # por defecto es GET (obtener) es permitido, POST hay que especificarlo, methods=['GET', 'POST']
+@app.route('/hello', methods=['GET', 'POST']) # por defecto es GET (obtener) es permitido, POST hay que especificarlo, methods=['GET', 'POST']
 @login_required
 def hello():
     user_ip = session.get('user_ip') # Obtenemos la IP del usuario guardada en la cookie
@@ -75,19 +75,39 @@ def hello():
     # user_ip = request.cookies.get('user_ip') # Obtenemos la IP del usuario guardada en la cookie
     # login_form = LoginForm() # Instanciamos el formulario de login, después de esto se puede agregar al contexto
 
+    todo_form = TodoForm()
+    delete_form = DeleteTodoForm()
+
     context = {
         'user_ip': user_ip,
         'todos': get_todos(user_id=username),
         # 'login_form': login_form,
-        'username': username
+        'username': username,
+        'todo_form': todo_form,
+        'delete_form': delete_form
     }
 
-    users = get_users()
+    # users = get_users()
+
+    if todo_form.validate_on_submit():
+        put_todo(user_id=username, description=todo_form.description.data)
+        flash('Tu tarea se creo con éxito!')
+
+        return redirect(url_for('hello'))
 
     return render_template('hello.html', **context) # Renderizamos el template HTML y le enviamos la ip del usuario como parámetro
     # expandir un diccionario (**Kwargs), al colocar "**" a la variable context, le estamos indicando que en vez de pasarle un diccionario, le pasamos los elementos del diccionario como parámetros, como lo de arriba
     # expandir una lista, tupla o sets (*arg), al colocar "*" a la variable context, le estamos indicando que en vez de pasarle una lista, le pasamos los elementos de la lista como parámetros
     # return render_template('hello.html', user_ip=user_ip, todos=todos) # así le pasamos parámetros al template
+
+
+@app.route('/todo/delete/<todo_id>', methods=['POST'])
+def delete(todo_id):
+    user_id = current_user.id
+    delete_todo(user_id=user_id, todo_id=todo_id)
+    flash('Tu tarea se eliminó con éxito!')
+
+    return redirect(url_for('hello'))
 
 
 
